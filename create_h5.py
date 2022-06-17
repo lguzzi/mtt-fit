@@ -13,15 +13,18 @@ NOTE: the test sample size is deduced from the --train-size and --valid-size arg
 #parser.add_argument('--output'    , required=True             , help='Output .h5 file')
 parser.add_argument('--target'    , default='tauH_SVFIT_mass' , help='Target variable name')
 parser.add_argument('--tree'      , default='HTauTauTree'     , help='Tree name')
-parser.add_argument('--train-size', default = 0.6 , type=float, help='Fraction of the train sample')
-parser.add_argument('--valid-size', default = 0.3 , type=float, help='Fraction of the validation sample')
-parser.add_argument('--min'       , default = 50  , type=float, help='Min. value of the target variable')
-parser.add_argument('--max'       , default = 250 , type=float, help='Max. value of the target variable')
-parser.add_argument('--step'      , default = 2   , type=float, help='Step in the target variable used during flat-weight computation')
+parser.add_argument('--train-size', default=0.6 , type=float  , help='Fraction of the train sample')
+parser.add_argument('--valid-size', default=0.3 , type=float  , help='Fraction of the validation sample')
+parser.add_argument('--min'       , default=50  , type=float  , help='Min. value of the target variable')
+parser.add_argument('--max'       , default=250 , type=float  , help='Max. value of the target variable')
+parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
+parser.add_argument('--threads'   , default=1   , type=int    , help='Number of threads')
 args = parser.parse_args()
 
 args.input  = '/gwteraz/users/dzuolo/HHbbtautauAnalysis/SKIMMED_Legacy2017_19Feb2021/SKIM_GGHH_NLO_cHHH1_xs/output_0.root'
 args.output = 'test.h5'
+
+ROOT.ROOT.EnableImplicitMT(args.threads)
 
 def train_test_valid_split(dframe, train_size, valid_size):
   dframe = dframe.sample(frac=1, random_state=2022).reset_index(drop=True)
@@ -37,7 +40,7 @@ def flatten(dframe, target, min_t, max_t, step_t, subset, weight):
   for ml, mh in zip(bins[:-1], bins[1:]):
     loc = (dframe[subset]==1) & (dframe[target]>=ml) & (dframe[target]<mh)
     dframe.loc[loc, weight] *= 1./len(dframe.loc[loc].index) if len(dframe.loc[loc].index) else 0
-  #dframe.loc[dframe[subset]==1, weight] *= 1./dframe.loc[dframe[subset]==1, weight].mean()
+  dframe.loc[dframe[subset]==1, weight] *= 1./dframe.loc[dframe[subset]==1, weight].mean()
 
 features = {
   # standalone definitions
@@ -70,6 +73,7 @@ features = {
   'VBFjet2_phi'               : ('VBFjet1_pt>0?VBFjet2_phi:0'                             , 'float16' ),
   'VBFjet2_deepFlavor'        : ('VBFjet1_pt>0?VBFjet2_btag_deepFlavor:0'                 , 'float16' ),
   'tauH_SVFIT_mass'           : ('tauH_SVFIT_mass'                                        , 'float32' ),
+  'target'                    : ('tauH_SVFIT_mass'                                        , 'float32' ),
   'pairType'                  : ('pairType'                                               , 'int16'   ),
   'is_test'                   : ('false'                                                  , 'bool'    ),
   'is_train'                  : ('false'                                                  , 'bool'    ),
