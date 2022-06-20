@@ -9,8 +9,8 @@ from glob import glob
 import argparse
 parser = argparse.ArgumentParser('Build .h5 files from a list of .root files for the HTT mass NN.\n\
 NOTE: the test sample size is deduced from the --train-size and --valid-size arguments')
-#parser.add_argument('--input'     , required=True             , help='Input .root file of glob pattern')
-#parser.add_argument('--output'    , required=True             , help='Output .h5 file')
+parser.add_argument('--input'     , required=True             , help='Input .root file of glob pattern')
+parser.add_argument('--output'    , required=True             , help='Output .h5 file')
 parser.add_argument('--target'    , default='tauH_SVFIT_mass' , help='Target variable name')
 parser.add_argument('--tree'      , default='HTauTauTree'     , help='Tree name')
 parser.add_argument('--train-size', default=0.6 , type=float  , help='Fraction of the train sample')
@@ -20,9 +20,6 @@ parser.add_argument('--max'       , default=250 , type=float  , help='Max. value
 parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
 parser.add_argument('--threads'   , default=1   , type=int    , help='Number of threads')
 args = parser.parse_args()
-
-args.input  = '/gwteraz/users/dzuolo/HHbbtautauAnalysis/SKIMMED_Legacy2017_19Feb2021/SKIM_GGHH_NLO_cHHH1_xs/output_0.root'
-args.output = 'test.h5'
 
 ROOT.ROOT.EnableImplicitMT(args.threads)
 
