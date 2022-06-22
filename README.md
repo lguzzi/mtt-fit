@@ -25,7 +25,7 @@ Alternatively, the [mTT_env-snapshot.yaml]() dictionary contains all the require
 To create the .h5 files, run
 
 ```bash
-python create_h5.py --input input_patter --output output_file --target target_var --tree tree_name --train-size T --valid-size V --min m --max M --step s --threads t
+python create_h5.py --input input_patter --output output_file --target target_var --tree tree_name --train-size T --valid-size V --min m --max M --threads t --features /path/to/cfg.py
 ```
 
 where 
@@ -37,8 +37,8 @@ where
 ```--valid-size``` is the validation sample size, 
 ```--min``` is the lower threshold for the target, 
 ```--max``` is the higher threshold for the target, 
-```--step``` is the step to be considered if flattening the target distribution with per-event weights, 
-```--threads``` is the number of threads to use.  
+```--threads``` is the number of threads to use, 
+```--features```is the cfg file containing the FEATURES dictionary, 
 The test sample size is deduced from the train and test samples size.
 
 # Notes

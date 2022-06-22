@@ -18,7 +18,7 @@ parser.add_argument('--train-size', default=0.6 , type=float  , help='Fraction o
 parser.add_argument('--valid-size', default=0.3 , type=float  , help='Fraction of the validation sample')
 parser.add_argument('--min'       , default=50  , type=float  , help='Min. value of the target variable')
 parser.add_argument('--max'       , default=250 , type=float  , help='Max. value of the target variable')
-parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
+#parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
 parser.add_argument('--threads'   , default=1   , type=int    , help='Number of threads')
 parser.add_argument('--features'  , required=True             , help='Python files with the FEATURES dictionary')
 args = parser.parse_args()
