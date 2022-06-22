@@ -31,7 +31,7 @@ inputs = {
 } if args.max_events is not None else {
   os.path.basename(h): pd.read_hdf(h) for h in args.input
 }
-dframe  = pd.concat(inputs)
+dframe  = pd.concat(inputs.values())
 x_train = dframe.drop(columns='target').loc[dframe.drop(columns='target')['is_train']==1]
 x_valid = dframe.drop(columns='target').loc[dframe.drop(columns='target')['is_valid']==1]
 x_test  = dframe.drop(columns='target').loc[dframe.drop(columns='target')['is_test' ]==1]
