@@ -18,15 +18,15 @@ parser.add_argument('--train-size', default=0.6 , type=float  , help='Fraction o
 parser.add_argument('--valid-size', default=0.3 , type=float  , help='Fraction of the validation sample')
 parser.add_argument('--min'       , default=50  , type=float  , help='Min. value of the target variable')
 parser.add_argument('--max'       , default=250 , type=float  , help='Max. value of the target variable')
-#parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
 parser.add_argument('--threads'   , default=1   , type=int    , help='Number of threads')
 parser.add_argument('--features'  , required=True             , help='Python files with the FEATURES dictionary')
+#parser.add_argument('--step'      , default=2   , type=float  , help='Step in the target variable used during flat-weight computation')
 args = parser.parse_args()
 
 ROOT.ROOT.EnableImplicitMT(args.threads)
-FEATURES  = __import__(args.features.replace('/', '.').strip('.py'), fromlist=['']).FEATURES
-RFEATURES = {k: (v, t) for k, (v, t) in FEATURES.items() if not type(v) is type(lambda: None)}
-LFEATURES = {k: (v, t) for k, (v, t) in FEATURES.items() if     type(v) is type(lambda: None)}
+BRANCHES  = __import__(args.features.replace('/', '.').strip('.py'), fromlist=['']).BRANCHES
+RBRANCHES = {k: (v, t) for k, (v, t) in BRANCHES.items() if not type(v) is type(lambda: None)}
+LBRANCHES = {k: (v, t) for k, (v, t) in BRANCHES.items() if     type(v) is type(lambda: None)}
 
 def train_test_valid_split(dframe, train_size, valid_size):
   dframe = dframe.sample(frac=1, random_state=2022).reset_index(drop=True)
@@ -55,13 +55,13 @@ baseline = ' && '.join([
 
 iframe = ROOT.RDataFrame(args.tree, args.input)
 iframe = iframe.Filter(baseline)
-for k, (v, _) in RFEATURES.items():
+for k, (v, _) in RBRANCHES.items():
   iframe = iframe.Redefine(k, v) if k in iframe.GetColumnNames() else iframe.Define(k, v)
-oframe = pd.DataFrame.from_dict(iframe.AsNumpy(columns=RFEATURES.keys()))
-for k, (_, t) in RFEATURES.items():
+oframe = pd.DataFrame.from_dict(iframe.AsNumpy(columns=RBRANCHES.keys()))
+for k, (_, t) in RBRANCHES.items():
   oframe[k] = oframe[k].astype(t) if not t is None else oframe[k]
 
-for k, (v, t) in LFEATURES.items():
+for k, (v, t) in LBRANCHES.items():
   oframe[k] = oframe.apply(v, axis=1).astype(t) if not t is None else oframe.apply(v, axis=1)
 
 oframe = oframe.drop(columns=['pairType'])
