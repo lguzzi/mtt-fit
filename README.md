@@ -10,7 +10,7 @@ To install the correct environment use [conda](https://docs.conda.io/en/latest/)
 conda env create -f mTT_env.yaml
 conda activate mTT_env.yaml
 conda env config vars set \
-    LD_LIBRARY_PATH=$(realpath $(dirname $CONDA_EXE)/../lib):$LD_LIBRARY_PATH \
+    LD_LIBRARY_PATH=$(realpath $(dirname $CONDA_EXE)/../lib):$CONDA_PREFIX/lib:$LD_LIBRARY_PATH \
     MTTFIT_HOME=$PWD
 conda deactivate
 conda activate mtt-fit
