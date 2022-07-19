@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-import sys ; assert sys.hexversion>=((3<<24)|(7<<16)), "Python 3.7 or greater required" # a binary joke is worth 1000 words
+import sys ; assert sys.hexversion>=((3<<24)|(7<<16)), "Python 3.7 or greater required" # a binary joke is worth 111 words
 sys.path.append(os.getcwd())
 
 import ROOT
@@ -47,7 +47,7 @@ def flatten(dframe, target, min_t, max_t, step_t, subset, weight):
 baseline = ' && '.join([
   'nleps==0'              ,
   'nbjetscand>1'          ,
-  'isOS!=0'               ,
+  'isOS==1'               ,
   'dau2_deepTauVsJet>=5'  ,
   '{T}>{m} && {T}<{M}'.format(T=args.target, m=args.min, M=args.max),
   '((pairType==0 && dau1_iso<0.15) || (pairType==1 && dau1_eleMVAiso==1) || (pairType==2 && dau1_deepTauVsJet>=5))',
