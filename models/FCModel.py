@@ -1,9 +1,12 @@
+from tensorflow             import keras
 from keras                  import Sequential
 from keras.layers           import InputLayer, Dense, Dropout
 
 from models.Model import Model
 
 class FCModel(Model):
+  MEAN = lambda x: x.mean() if x.dtype!='int16' else 0
+  VAR  = lambda x: x.var()  if x.dtype!='int16' else 1
   def __init__(self, dropout, neurons, **kwargs):
     super().__init__(**kwargs)
     self.dropout = dropout
@@ -15,6 +18,11 @@ class FCModel(Model):
     self.COMPILE_SETUP = self.SETUP['COMPILE']
 
     self.model = Sequential(InputLayer(input_shape=len(self.FEATURES)), name=self.name)
+    self.model.add(keras.layers.Normalization(axis=-1,
+      mean      = [FCModel.MEAN(self.dframe[k]) for k in self.FEATURES],
+      variance  = [FCModel.VAR (self.dframe[k]) for k in self.FEATURES])
+    ) ; self.model.layers[-1].trainable = False
+
     for n in self.neurons:
       self.model.add(Dense(n, **self.DENSE_SETUP))
       if self.dropout is not None:
