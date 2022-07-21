@@ -10,8 +10,6 @@ parser.add_argument('-s', '--setup'     , required=True           , help='Load t
 parser.add_argument('-m', '--model'     , required=True           , help='Path to the keras model'                  )
 args = parser.parse_args()
 
-assert not os.path.exists(args.output), "Output folder alredy exists, will not proceed"
-
 from tensorflow   import keras
 from models.Model import Model
 

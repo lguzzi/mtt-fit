@@ -24,9 +24,8 @@ def PLOT_PREDICTION_VS_TARGET(x, y, xl='SVFit [GeV]', yl='mTT [GeV]'):
   plt.ylim(50, 250)
   plt.xlabel(xl)
   plt.ylabel(yl)
-  plt.plot([50,250], [pol1(p1a,p1b    ,50), pol1(p1a,p1b    ,250)], color='blue' , marker='', label='lin. fit')
-  plt.plot([50,250], [pol2(p2a,p2b,p2c,50), pol2(p2a,p2b,p2c,250)], color='green', marker='', label='pol2 fit')
-  plt.plot([50,250], [50,250]                                     , color='red'  , marker='', label='target value')
+  plt.plot([50,250], [pol1(p1a,p1b,50), pol1(p1a,p1b,250)], color='blue' , marker='', label='lin. fit')
+  plt.plot([50,250], [50,250]                             , color='red'  , marker='', label='target value')
   plt.scatter(x, y, marker='.', s=1)
   plt.legend(loc='upper left')
   return fig

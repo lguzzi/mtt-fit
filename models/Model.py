@@ -1,11 +1,11 @@
 import os
 import pandas as pd
 from tensorflow import keras
+import pickle
 
 class Model:
-  NORM = lambda x: (x-x.mean())/x.std()
   SEED = 2022
-  def __init__(self, name, files, output, setup, model=None):
+  def __init__(self, name, files, output, setup, overrun={}, model=None):
     keras.utils.set_random_seed(Model.SEED)
 
     self.model    = model
@@ -14,6 +14,7 @@ class Model:
     self.log_dir  = self.output+"/log"
     self.files    = files
     self.name     = name
+    self.overrun  = overrun
 
     self.CFG      = __import__(self.setup.replace('/', '.').strip('.py'), fromlist=[''])
 
@@ -24,9 +25,10 @@ class Model:
     self.max_events = self.SETUP['max_events' ] if 'max_events' in self.SETUP.keys() else None
 
     assert self.target not in self.FEATURES , "The target variable is in the feature list"
-    assert not os.path.exists(self.output)  , "Output directory already exists"
+    #assert not os.path.exists(self.output)  , "Output directory already exists"
 
-    os.makedirs(self.output)
+    if not os.path.exists:
+      os.makedirs(self.output)
 
   def predict(self, batch_size=500):
     for file in self.files:
@@ -45,7 +47,6 @@ class Model:
     for k, v in self.inputs.items():
       v['sample'] = k
     self.dframe = pd.concat(self.inputs.values()).reset_index()
-
     self.x_train = self.dframe.loc[self.dframe['is_train']==1, self.FEATURES]
     self.x_valid = self.dframe.loc[self.dframe['is_valid']==1, self.FEATURES]
     self.x_test  = self.dframe.loc[self.dframe['is_test' ]==1, self.FEATURES]
@@ -62,3 +63,9 @@ class Model:
       **self.FIT_SETUP
     )
     self.model.save(self.output)
+
+  @staticmethod
+  def OVERRUN(ori, rep):
+    for k, v in rep.items():
+      if type(v)==dict: OVERRUN(ori[k], rep[k])
+      ori[k] = rep[k]

@@ -3,9 +3,9 @@ import sys ; sys.path.append(os.getcwd())
 
 from itertools          import product
 
-from keras.callbacks    import TensorBoard, ModelCheckpoint
-from models.FCModel     import FCModel
-from callbacks.plotting import mTTPlotCallback
+from keras.callbacks          import TensorBoard, ModelCheckpoint
+from models.FCModel           import FCModel
+from callbacks.plotting_SVFIT import mTTPlotCallback
 import tensorflow as tf
 
 import argparse

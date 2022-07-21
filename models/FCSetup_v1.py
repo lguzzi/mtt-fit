@@ -3,6 +3,12 @@ from keras.constraints          import max_norm
 from keras.optimizers           import Adam
 from keras.optimizers.schedules.learning_rate_schedule import ExponentialDecay
 
+gennu = '''
+TLorentzVector nus;
+nus.SetPtEtaPhiE(genNuTot_pt, genNuTot_eta, genNuTot_phi, genNuTot_e);
+return nus.{}();
+'''
+
 BRANCHES = {
   # ROOT features
   'tau1_pt'                   : ('dau1_pt'                                                , 'float32' ),
@@ -34,7 +40,6 @@ BRANCHES = {
   #'VBFjet2_phi'               : ('VBFjet1_pt>0?VBFjet2_phi:0'                             , 'float32' ),
   #'VBFjet2_deepFlavor'        : ('VBFjet1_pt>0?VBFjet2_btag_deepFlavor:0'                 , 'float32' ),
   'tauH_SVFIT_mass'           : ('tauH_SVFIT_mass'                                        , 'float32' ),
-  'target'                    : ('tauH_SVFIT_mass'                                        , 'float32' ),
   'pairType'                  : ('pairType'                                               , 'int32'   ),
   'is_test'                   : ('false'                                                  , 'bool'    ),
   'is_train'                  : ('false'                                                  , 'bool'    ),
@@ -45,6 +50,11 @@ BRANCHES = {
   'mT2'                       : ('sqrt(2*tau2_pt*MET_pt *(1-cos(tau2_phi-MET_phi )))'     , 'float32' ),
   'mTtt'                      : ('sqrt(2*tau1_pt*tau2_pt*(1-cos(tau1_phi-tau2_phi)))'     , 'float32' ),
   'mTtot'                     : ('sqrt(mT1*mT1+mT2*mT2+mTtt*mTtt)'                        , 'float32' ),
+  ## gen. neutrinos info
+  'genNu_px'                  : (gennu.format('Px'), 'float32'),
+  'genNu_py'                  : (gennu.format('Py'), 'float32'),
+  'genNu_pz'                  : (gennu.format('Pz'), 'float32'),
+  'genNu_m'                   : (gennu.format('M' ), 'float32'),
   # lambda features
   'channel'                   : (lambda x: {0:'mt', 1:'et', 2:'tt'}[x['pairType']]                       , None   ),
   'N_neutrinos'               : (lambda x: {'tt':2, 'mt':3, 'et':3, 'mm':4, 'em':4, 'ee':4}[x['channel']], 'int16'),
@@ -52,12 +62,15 @@ BRANCHES = {
 
 FEATURES = [
   b for b in BRANCHES.keys() if not b in [
-    'pairType', 'tauH_SVFIT_mass', 'is_train', 'is_valid', 'is_test', 'channel', 'sample_weight', 'target',
+    'pairType', 'is_train', 'is_valid', 'is_test', 'channel', 'sample_weight',
+    'tauH_SVFIT_mass', 'target', 'genNu_px', 'genNu_py', 'genNu_pz', 'genNu_m',
   ]
 ]
 
 SETUP = {
   'max_events': 250000,
+  'target'    : 'tauH_SVFIT_mass',
+  #'target'    : ['genNu_px', 'genNu_py', 'genNu_pz', 'genNu_m'],
   'DENSE':    {
     'activation'        : 'relu'          ,
     'kernel_constraint' : max_norm(3)     ,
@@ -68,17 +81,17 @@ SETUP = {
   },
   'COMPILE':  {
     'loss'      : 'mean_absolute_error'   ,
-    'optimizer' : Adam(learning_rate=ExponentialDecay(
-      initial_learning_rate = 5e-3  ,
-      decay_steps           = 10000 ,
-      decay_rate            = 0.9   )
-    ),
-    #'optimizer' : Adam(learning_rate=1e-3), 
+    #'optimizer' : Adam(learning_rate=ExponentialDecay(
+    #  initial_learning_rate = 5e-3    ,
+    #  decay_steps           = 50*1500 ,
+    #  decay_rate            = 0.2     )
+    #),
+    'optimizer' : Adam(learning_rate=1e-3), 
     'metrics'   : keras.metrics.mae       ,
   },
   'FIT':      {
-    'batch_size'          : 1000,
-    'epochs'              : 300 ,
+    'batch_size'          : 500,
+    'epochs'              : 100 ,
     'shuffle'             : True,
     'verbose'             : True,
     'use_multiprocessing' : True,

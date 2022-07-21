@@ -7,10 +7,11 @@ from models.Model import Model
 class FCModel(Model):
   MEAN = lambda x: x.mean() if x.dtype!='int16' else 0
   VAR  = lambda x: x.var()  if x.dtype!='int16' else 1
-  def __init__(self, dropout, neurons, **kwargs):
+  def __init__(self, dropout, neurons, n_targets=1, **kwargs):
     super().__init__(**kwargs)
     self.dropout = dropout
     self.neurons = neurons
+    self.n_targets = n_targets
 
   def compile(self):
     self.DENSE_SETUP   = self.SETUP['DENSE'  ]
@@ -27,7 +28,7 @@ class FCModel(Model):
       self.model.add(Dense(n, **self.DENSE_SETUP))
       if self.dropout is not None:
         self.model.add(Dropout(self.dropout))
-    self.model.add(Dense(1, **self.LAST_SETUP))
+    self.model.add(Dense(self.n_targets, **self.LAST_SETUP))
     
     print(self.model.summary())
     

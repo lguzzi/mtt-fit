@@ -1,16 +1,19 @@
-name: mtt-fit
+name: mtt-fit-test
 channels:
   - conda-forge
   - anaconda
 dependencies:
   - root==6.26.02
-  - scikit-learn
   - numpy==1.21.4
-  - pandas==1.4.2
-  - matplotlib
   - pytables==3.7.0
-  - pip==22.1.2
   - protobuf==3.20.1
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pip
   - git
+  - cudnn
+  - cudatoolkit
+  - htcondor
   - pip:
-    - tensorflow==2.9.1
+    - tensorflow>2.5
