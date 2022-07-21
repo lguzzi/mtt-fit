@@ -50,11 +50,10 @@ The test sample size is deduced from the train and test samples size.
 
 ## Changes in the conda environment
 
-When updating the conda enviroment file please update also the snapshot dictionaty and be sure not to put any user specific path inside the dictionary. Please run something like
+When updating the conda enviroment file update also the snapshot dictionaty and be sure not to put any user specific path inside the dictionary. Run something like
 
 ```bash
 conda activate mtt-fit
 conda env export | sed "s_prefix:.*__g" | sed "s_variables:.*__g" | sed "s_LD\_LIBRARY\_PATH.*__g" | sed "s_MTTFIT\_HOME.*__g" > mTT_env-snapshot.yaml
 ```
 to remove lines containing user paths.  
-It is better to test the environment from a fresh installation before committing.
