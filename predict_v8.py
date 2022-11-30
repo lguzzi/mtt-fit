@@ -3,7 +3,7 @@ import sys ; sys.path.append(os.getcwd())
 import argparse
 import numpy as np
 from tensorflow   import keras
-from models.Model import Model
+from models.Model_Functional import Model_Functional as Model
 from matplotlib import pyplot as plt
 from scipy.optimize import curve_fit
 
@@ -15,6 +15,14 @@ parser.add_argument('-s', '--setup'     , required=True           , help='Load t
 parser.add_argument('-m', '--model'     , required=True           , help='Path to the keras model'                  )
 parser.add_argument('-d', '--draw'      , default=None           , help='Path to the keras model'                  )
 args = parser.parse_args()
+
+def customMAE(y_true,y_pred):
+    #print("mass ",y_pred[:,8],y_true[:,8])    
+    #return tf.keras.backend.mean(math_ops.squared_difference(y_pred[:,:8],y_true[:,:8]),axis=-1)
+    deltaNeutrini = tf.keras.backend.mean(tf.math.abs(y_pred[:,:8]-y_true[:,:8]),axis=-1)
+    deltaMass2 = tf.keras.backend.mean(tf.math.abs(y_pred[:,8]-y_true[:,8]),axis=-1)
+    alpha = 0.01
+    return deltaNeutrini + alpha*deltaMass2 
 
 def gauss(x,amp,mu,sigma):  
   return amp*np.exp(-(x-mu)**2/(2*sigma**2))
@@ -56,15 +64,15 @@ for k in range(len(args.input)):
           files =  [args.input[k]],
           output= args.model          ,
           setup = args.setup          ,
-          model = keras.models.load_model(args.model)
+          model = keras.models.load_model(args.model,custom_objects = { "loss": customMAE})
         )
-      model_TTsem.load()  
+      model_TTsem.load() 
       recomass[os.path.basename(args.input[k]).strip('.h5')] = recoMass(model_TTsem)
 
 fig = plt.figure(figsize=(10, 7), dpi=100)
 nbins=100
 xmin = 0
-xmax = 300
+xmax = 200
 massFit = 0
 massSigma = 0
 plt.xticks(np.arange(xmin,xmax, 5.0))
@@ -82,7 +90,7 @@ for k,v in recomass.items():
     massFit = poptExp[1]
     massSigma = poptExp[2]
     y = gaussExp(x, poptExp[0],poptExp[1],poptExp[2],poptExp[3],poptExp[4])
-    plt.plot(x,y, color="r", linestyle="dashed")
+    #plt.plot(x,y, color="r", linestyle="dashed")
 filename ="mass_"+str(args.model.split("/")[0])+".pdf"
 if args.draw is not None:
   plt.savefig(args.output+"/"+filename)
