@@ -4,6 +4,8 @@ import argparse
 import numpy as np
 from tensorflow   import keras
 from models.Model_Functional import Model_Functional as Model
+from models.FCModel_Functional import FCModel_Functional
+
 from matplotlib import pyplot as plt
 from scipy.optimize import curve_fit
 
@@ -64,7 +66,7 @@ for k in range(len(args.input)):
           files =  [args.input[k]],
           output= args.model          ,
           setup = args.setup          ,
-          model = keras.models.load_model(args.model,custom_objects = { "loss": customMAE})
+          model = keras.models.load_model(args.model,{"customMAE":None})
         )
       model_TTsem.load() 
       recomass[os.path.basename(args.input[k]).strip('.h5')] = recoMass(model_TTsem)
