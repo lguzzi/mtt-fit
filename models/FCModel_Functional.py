@@ -29,8 +29,10 @@ class FCModel_Functional(Model):
     #return tf.keras.backend.mean(math_ops.squared_difference(y_pred[:,:8],y_true[:,:8]),axis=-1)
     deltaNeutrini = tf.keras.backend.mean(tf.math.abs(y_pred[:,:8]-y_true[:,:8]),axis=-1)
     deltaMass2 = tf.keras.backend.mean(tf.math.abs(y_pred[:,8]-y_true[:,8]),axis=-1)
-    alpha = 0.01
-    return deltaNeutrini + alpha*deltaMass2 
+    crossEntropy = tf.keras.losses.CategoricalCrossentropy()(y_true[:,9:],y_pred[:,9:])
+    alpha = 0.1
+    beta = 1.
+    return deltaNeutrini + alpha*deltaMass2 + beta*crossEntropy
 
 
 
@@ -53,14 +55,22 @@ class FCModel_Functional(Model):
     self.layer6 = Dense(self.neurons,**self.DENSE_SETUP,name="layer6")(self.layer5)
     self.layer7 = Dense(self.neurons,**self.DENSE_SETUP,name="layer7")(self.layer6)
     self.layer8 = Dense(self.neurons,**self.DENSE_SETUP,name="layer8")(self.layer7)      
-    self.output_layer = Dense(self.n_targets, **self.LAST_SETUP,name="output_layer")(self.layer8)    
+    self.neutrini_layer = Dense(self.n_targets, **self.LAST_SETUP,name="neutrini_layer")(self.layer8)    
     self.taus = self.input_layer[:,:8]          
-    self.minv2_ = Lambda(FCModel_Functional.minv2, name="layer_minv2")([self.taus,self.output_layer])
-    self.mergedOutput = Concatenate(axis=-1)([self.output_layer, self.minv2_])
-    self.model.add_loss(FCModel_Functional.customMAE)
-    self.model = tf.keras.models.Model(self.input_layer, self.mergedOutput, name=self.name)    
+    self.minv2_ = Lambda(FCModel_Functional.minv2, name="layer_minv2")([self.taus,self.neutrini_layer])
     
+    self.mergingForClassification = Concatenate(axis=-1)([self.input_layer,self.neutrini_layer, self.minv2_])
+    self.layer21 = Dense(self.neurons,**self.DENSE_SETUP,name="layer21")(self.mergingForClassification)
+    self.layer31 = Dense(self.neurons,**self.DENSE_SETUP,name="layer31")(self.layer21)
+    self.layer41 = Dense(self.neurons,**self.DENSE_SETUP,name="layer41")(self.layer31)
+    self.layer51 = Dense(self.neurons,**self.DENSE_SETUP,name="layer51")(self.layer41)
+    self.layer61 = Dense(self.neurons,**self.DENSE_SETUP,name="layer61")(self.layer51)
+    self.layer71 = Dense(self.neurons,**self.DENSE_SETUP,name="layer71")(self.layer61)
+    self.layer81 = Dense(self.neurons,**self.DENSE_SETUP,name="layer81")(self.layer71)
+    self.classifier = Dense(4,activation=tf.keras.activations.softmax,name="classifier")(self.layer81) 
+    self.mergedOutput = Concatenate(axis=-1)([self.neutrini_layer, self.minv2_,self.classifier])    
+    self.model = tf.keras.models.Model(self.input_layer, self.mergedOutput, name=self.name)        
     print(self.model.summary())
     
-    #self.model.compile(**self.COMPILE_SETUP,loss = FCModel_Functional.customMAE,run_eagerly=False)
-    sself.model.compile(**self.COMPILE_SETUP,run_eagerly=False)
+    self.model.compile(**self.COMPILE_SETUP,loss=FCModel_Functional.customMAE,run_eagerly=False)
+    #self.model.compile(**self.COMPILE_SETUP,run_eagerly=False)

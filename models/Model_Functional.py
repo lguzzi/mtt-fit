@@ -61,19 +61,22 @@ class Model_Functional:
     for k, v in self.inputs.items():
       if "ggF" in k:
         normalization = v.shape[0]
-        #print(normalization)
-
+    
     for k, v in self.inputs.items():
       v["mGenReco"] =  v["mGenReco"]**2     
-      v['sample'] = k               
-      v["sample_weight"]=v["sample_weight"]*normalization/v.shape[0]
-      if "ggF" in k:
-        v["sample_weight"]=v["sample_weight"]*2
+      v['sample'] = k      
+      v["sample_weight"]=v["sample_weight"]*normalization/v.shape[0]      
+      if "ggF" in k:        
+        v["sample_weight"]=v["sample_weight"]*1
+        v["sample_class1"]=1
       if "ggH" in k:
-        v["sample_weight"]=v["sample_weight"]*7
+        v["sample_weight"]=v["sample_weight"]*20         
+        v["sample_class2"]=1
       if "DY" in k:
-        v["sample_weight"]=v["sample_weight"]*2
-      
+        v["sample_weight"]=v["sample_weight"]*2        
+        v["sample_class3"]=1
+      if "TT" in k:
+        v["sample_class4"]=1
       #print(v["sample"].head(1) , v["sample_weight"].head(1))
 
     self.dframe = pd.concat(self.inputs.values()).reset_index()
@@ -97,7 +100,7 @@ class Model_Functional:
     self.y_train = np.concatenate(self.y_trains)
     self.y_valid = np.concatenate(self.y_valids)
     self.y_test = np.concatenate(self.y_tests)
-    """
+    """    
     self.y_train = self.dframe.loc[self.dframe['is_train']==1, self.target  ]
     self.y_valid = self.dframe.loc[self.dframe['is_valid']==1, self.target  ]
     self.y_test  = self.dframe.loc[self.dframe['is_test' ]==1, self.target  ]    
