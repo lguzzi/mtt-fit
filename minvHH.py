@@ -124,16 +124,17 @@ for k,v in recomass.items():
       xmax=200
       bin_step=5   
       nbins=75    
-    plt.xticks(np.arange(xmin,xmax, bin_step))    
-    nH, bins, patches = plt.hist(v[var],density=1,alpha=0.2,histtype="stepfilled",color="b",linewidth=2.,bins=nbins,range=(xmin,xmax),label =k.split("_")[1])              
-    nH, bins, patches = plt.hist(v[var],density=1,alpha=0.9,histtype="step",linewidth=1.,color="b",bins=nbins,range=(xmin,xmax))              
-    nH, bins, patches = plt.hist(v_discr[var],density=1,alpha=0.2,histtype="stepfilled",linewidth=2.,color="g",bins=nbins,range=(xmin,xmax),label ="Selected Discr "+k.split("_")[0])          
-    nH, bins, patches = plt.hist(v_discr[var],density=1,alpha=0.9,histtype="step",linewidth=1.,color="g",bins=nbins,range=(xmin,xmax))          
-    nH, bins, patches = plt.hist(v_ell[var],density=1,alpha=0.2,histtype="stepfilled",linewidth=2.,color="r",bins=nbins,range=(xmin,xmax),label ="Selected Ell "+k.split("_")[1])                
-    nH, bins, patches = plt.hist(v_ell[var],density=1,alpha=0.9,histtype="step",linewidth=1.,color="r",bins=nbins,range=(xmin,xmax))                
-    nH, bins, patches = plt.hist(v_ell_regr[var],density=1,alpha=0.2,histtype="stepfilled",linewidth=2.,color="y",bins=nbins,range=(xmin,xmax),label ="Selected Ell Regr "+k.split("_")[0])                
-    nH, bins, patches = plt.hist(v_ell_regr[var],density=1,alpha=0.9,histtype="step",linewidth=1.,color="y",bins=nbins,range=(xmin,xmax))                
-    #nH, bins, patches = plt.hist(v_discr_ell_regr[var],density=1,alpha=0.2,histtype="stepfilled",linewidth=2.,bins=nbins,range=(xmin,xmax),label ="Selected Discr + Ell Regr "+k.split("_")[0])                
+    plt.xticks(np.arange(xmin,xmax, bin_step)) 
+    plt.yticks(minor=True)   
+    nH, bins, patches = plt.hist(v[var],density=0,alpha=0.2,histtype="stepfilled",color="b",linewidth=2.,bins=nbins,range=(xmin,xmax),label =k.split("_")[1])              
+    nH, bins, patches = plt.hist(v[var],density=0,alpha=0.9,histtype="step",linewidth=1.,color="b",bins=nbins,range=(xmin,xmax))              
+    nH, bins, patches = plt.hist(v_discr[var],density=0,alpha=0.2,histtype="stepfilled",linewidth=2.,color="g",bins=nbins,range=(xmin,xmax),label ="Selected Discr "+k.split("_")[0])          
+    nH, bins, patches = plt.hist(v_discr[var],density=0,alpha=0.9,histtype="step",linewidth=1.,color="g",bins=nbins,range=(xmin,xmax))          
+    nH, bins, patches = plt.hist(v_ell[var],density=0,alpha=0.2,histtype="stepfilled",linewidth=2.,color="r",bins=nbins,range=(xmin,xmax),label ="Selected Ell "+k.split("_")[1])                
+    nH, bins, patches = plt.hist(v_ell[var],density=0,alpha=0.9,histtype="step",linewidth=1.,color="r",bins=nbins,range=(xmin,xmax))                
+    nH, bins, patches = plt.hist(v_ell_regr[var],density=0,alpha=0.2,histtype="stepfilled",linewidth=2.,color="y",bins=nbins,range=(xmin,xmax),label ="Selected Ell Regr "+k.split("_")[0])                
+    nH, bins, patches = plt.hist(v_ell_regr[var],density=0,alpha=0.9,histtype="step",linewidth=1.,color="y",bins=nbins,range=(xmin,xmax))                
+    #nH, bins, patches = plt.hist(v_discr_ell_regr[var],density=0,alpha=0.2,histtype="stepfilled",linewidth=2.,bins=nbins,range=(xmin,xmax),label ="Selected Discr + Ell Regr "+k.split("_")[0])                
     plt.legend()      
     filename =str(k)+"_"+str(var)+"_"+str(args.model.split("/")[0])+".pdf"
     plt.savefig(args.output+"/"+filename)
