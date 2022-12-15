@@ -124,8 +124,7 @@ for k,v in recomass.items():
       xmax=200
       bin_step=5   
       nbins=75    
-    plt.xticks(np.arange(xmin,xmax, bin_step)) 
-    plt.yticks(minor=True)   
+    plt.xticks(np.arange(xmin,xmax, bin_step))     
     nH, bins, patches = plt.hist(v[var],density=0,alpha=0.2,histtype="stepfilled",color="b",linewidth=2.,bins=nbins,range=(xmin,xmax),label =k.split("_")[1])              
     nH, bins, patches = plt.hist(v[var],density=0,alpha=0.9,histtype="step",linewidth=1.,color="b",bins=nbins,range=(xmin,xmax))              
     nH, bins, patches = plt.hist(v_discr[var],density=0,alpha=0.2,histtype="stepfilled",linewidth=2.,color="g",bins=nbins,range=(xmin,xmax),label ="Selected Discr "+k.split("_")[0])          
