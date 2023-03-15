@@ -30,6 +30,7 @@ return tau1.{}();
 '''
 BRANCHES = {
   # ROOT features
+  'eventNumber'                   : ("EventNumber"                                        , 'float32' ),
   'tau1_px'                   : (tau1.format('Px')                                        , 'float32' ),
   'tau1_py'                  : (tau1.format('Py')                                        , 'float32' ),
   'tau1_pz'                   : (tau1.format('Pz')                                        , 'float32' ),
@@ -140,6 +141,7 @@ BRANCHES = {
 
 FEATURES = [
   b for b in BRANCHES.keys() if not b in [
+    "EventNumber",
     'pairType', 'is_train', 'is_valid', 'is_test', 'channel', 'sample_weight',
     'tauH_SVFIT_mass', 'target', 'genNu1_px', 'genNu1_py', 'genNu1_pz', 'genNu1_e',
     'genNu2_px', 'genNu2_py', 'genNu2_pz', 'genNu2_e',
