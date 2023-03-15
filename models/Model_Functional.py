@@ -1,14 +1,16 @@
 import os
 import pandas as pd
 from tensorflow import keras
-import pickle
+import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
-import numpy as np
+import random
 
 class Model_Functional:
   SEED = 2022
   def __init__(self, name, files, output, setup, overrun={}, model=None):
     keras.utils.set_random_seed(Model_Functional.SEED)
+    #tf.random.set_seed(Model_Functional.SEED)
+    #random.seed(Model_Functional.SEED)
 
     self.model    = model
     self.setup    = setup
@@ -47,7 +49,7 @@ class Model_Functional:
     pred = self.model.predict(data)
     #pred = self.transformer[0].inverse_transform(pred)    
     return pred
-
+  
   def load(self):
     #for k in self.FEATURES:
     #  print(k)
@@ -59,23 +61,32 @@ class Model_Functional:
     }
     normalization = 0.
     for k, v in self.inputs.items():
-      if "ggF" in k:
+      if "DY" in k:
         normalization = v.shape[0]
-    
+        #print(normalization)
+
     for k, v in self.inputs.items():
       v["mGenReco"] =  v["mGenReco"]**2     
-      v['sample'] = k      
-      v["sample_weight"]=v["sample_weight"]*normalization/v.shape[0]      
-      if "ggF" in k:        
-        v["sample_weight"]=v["sample_weight"]*1
+      v['sample'] = k               
+      v["sample_weight"]=v["sample_weight"]*normalization/v.shape[0]
+      
+      if "m350" in k:
+        v["sample_weight"]=v["sample_weight"]
+        v["sample_class1"]=1
+      if "ggF" in k:
+        v["sample_weight"]=v["sample_weight"]
+        v["sample_class1"]=1
+      if "allEvents" in k:
+        v["sample_weight"]=v["sample_weight"]
         v["sample_class1"]=1
       if "ggH" in k:
-        v["sample_weight"]=v["sample_weight"]*20         
+        v["sample_weight"]=v["sample_weight"]
         v["sample_class2"]=1
       if "DY" in k:
-        v["sample_weight"]=v["sample_weight"]*2        
+        v["sample_weight"]=v["sample_weight"]
         v["sample_class3"]=1
       if "TT" in k:
+        v["sample_weight"]=v["sample_weight"]*1
         v["sample_class4"]=1
       #print(v["sample"].head(1) , v["sample_weight"].head(1))
 
@@ -114,8 +125,15 @@ class Model_Functional:
       callbacks       = callbacks                   ,
       **self.FIT_SETUP
     )
-    self.model.save(self.output)
 
+    self.model.save(self.output)
+    """
+    self.model_json = self.model.to_json()
+    with open(self.output, "w") as json_file:
+      json_file.write(self.model_json)
+    # serialize weights to HDF5
+    self.model.save_weights(self.output)
+    """ 
   @staticmethod
   def OVERRUN(ori, rep):
     for k, v in rep.items():
