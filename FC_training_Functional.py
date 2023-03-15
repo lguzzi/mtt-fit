@@ -21,7 +21,7 @@ parser.add_argument('-i', '--input'     , required=True   , nargs='+'           
 parser.add_argument('-o', '--output'    , required=True                         , help='Output trained file'                        )
 parser.add_argument('-s', '--setup'     , required=True                         , help='Load the setup from a python script'        )
 parser.add_argument('-d', '--dropout'   , default=None                          , help='use dropout for the hidden layers (None=no)')
-parser.add_argument('-n', '--neurons'   , default=200, nargs='+', type=int , help='list of neuron numbers (per layer)'         )
+parser.add_argument('-n', '--neurons'   , default=120, nargs='+', type=int , help='list of neuron numbers (per layer)'         )
 parser.add_argument('-N', '--name'      , default='mTT_fit'                     , help='Model name'                                 )
 parser.add_argument('-D', '--dry-run'   , action='store_true'                   , help='Don\'t fit'                                 )
 parser.add_argument('-F', '--fast'      , action='store_true'                   , help='Don\'t run plotting callbacks'              )
