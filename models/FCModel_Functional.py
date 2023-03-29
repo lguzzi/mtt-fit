@@ -81,6 +81,7 @@ class FCModel_Functional(Model):
     self.taus = self.input_layer[:,:8]          
     self.minv2_ = Lambda(FCModel_Functional.minv2, name="layer_minv2")([self.taus,self.neutrini_layer])
     self.mergingForClassification = Concatenate(axis=-1)([self.input_layer,self.neutrini_layer, self.minv2_])
+    #self.mergingForClassification = Concatenate(axis=-1)([self.input_layer,self.neutrini_layer])
     #self.mergingForClassification = self.input_layer
     self.layer21 = Dense(self.neurons,**self.DENSE_SETUP,name="layer21",trainable=self.train_part2)(self.mergingForClassification)
     self.layer31 = Dense(self.neurons,**self.DENSE_SETUP,name="layer31",trainable=self.train_part2)(self.layer21)
