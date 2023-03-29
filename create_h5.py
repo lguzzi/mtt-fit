@@ -71,7 +71,8 @@ baseline = ' && '.join([
   'isOS==1'               ,
   'dau2_deepTauVsJet>=5'  ,
   #'{T}>{m} && {T}<{M}'.format(T=args.target, m=args.min, M=args.max),
-  '((pairType==0 && dau1_iso<0.15) || (pairType==1 && dau1_eleMVAiso==1) || (pairType==2 && dau1_deepTauVsJet>=5))',  
+  'HHKin_mass>{m} && HHKin_mass<{M}'.format(m=args.min, M=args.max),
+  '((pairType==0 && dau1_iso<0.15) || (pairType==1 && dau1_eleMVAiso==1) || (pairType==2 && dau1_deepTauVsJet>=5))',
 ])
 
 

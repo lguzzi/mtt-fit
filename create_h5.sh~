@@ -1,0 +1,9 @@
+#!/bin/csh
+
+#SAMPLES="DYmerged"
+foreach sam ("1500to2000" "2000to2500")
+    echo "Now creating "$sam" h5 file "
+    python3 create_h5.py  --input \
+    /gwdata/users/spalluotto/ResonantHHbbtautauAnalysis/SKIMS_UL2018_18Jan2023/SKIM_RSGravitonToHHToTo2B2Tau_mG_${sam}/output_*.root \
+    --output output_HH_MG_${sam}_v10.h5 --features models/FCSetup_v10.py
+end
