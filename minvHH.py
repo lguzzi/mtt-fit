@@ -21,6 +21,7 @@ args = parser.parse_args()
 
 def recoMass(model):
   data = model.x_test
+  print(model.FEATURES)
   #data = data
   #print(data.columns)
 
@@ -67,9 +68,7 @@ def recoMass(model):
 def recoMassOutput(sample="Odd"):
   class_true = [] 
   recomass = {}  
-  model_train = "Even"
-  if sample == "Even":
-    model_train = "Odd"
+  model_train = sample
   for k in range(len(args.input)):  
     inputFile = args.input[k]
     inputFile = inputFile.replace("train","train"+sample)
@@ -106,8 +105,9 @@ def recoMassOutput(sample="Odd"):
 print("Saved model ",args.model)
 
 recomass = {}
-variables, recomass_even = recoMassOutput("Even")   
+variables, recomass_even = recoMassOutput("Even")
 _, recomass_odd = recoMassOutput("Odd")
+
 #recomass_odd = recomass_even
 class_true = []
 class_pred = []
