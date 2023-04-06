@@ -6,7 +6,7 @@ from itertools          import product
 import tensorflow as tf
 from tensorflow.keras.callbacks         import TensorBoard, ModelCheckpoint,EarlyStopping
 from models.FCModel_Functional         import FCModel_Functional
-from callbacks.plotting_p4Nu import mTTPlotCallback
+#from callbacks.plotting_p4Nu import mTTPlotCallback
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -45,14 +45,14 @@ model.load()
 model.compile()
 
 callbacks = [
-  TensorBoard(
-    log_dir = model.log_dir
+#  TensorBoard(
+#    log_dir = model.log_dir
     #,histogram_freq=1,profile_batch = 8
-  ),
-  ModelCheckpoint(
-    filepath  = args.output+'/checkpoints/epoch_{epoch:02d}', 
-    save_freq = 20
-  ),
+#  ),
+#  ModelCheckpoint(
+#    filepath  = args.output+'/checkpoints/epoch_{epoch:02d}', 
+#    save_freq = 20
+#  ),
  EarlyStopping(
     monitor='val_loss',
     min_delta=0,
