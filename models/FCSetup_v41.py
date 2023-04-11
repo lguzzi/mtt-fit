@@ -43,7 +43,7 @@ return tau1.{}();
 '''
 BRANCHES = {
   # ROOT features
-  'eventNumber'                   : ("EventNumber"                                        , 'float32' ),
+  'eventNumber'                   : ("EventNumber"                                        , 'int32' ),
   'tau1_px'                   : (tau1.format('Px')                                        , 'float32' ),
   'tau1_py'                  : (tau1.format('Py')                                        , 'float32' ),
   'tau1_pz'                   : (tau1.format('Pz')                                        , 'float32' ),
