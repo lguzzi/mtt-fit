@@ -73,6 +73,7 @@ class Model_Functional:
 
     for k, v in self.inputs.items():
       v['sample'] = k   
+      v["mW"] =  v["mW"]**2 
 
 
     self.y_train = self.dframe.loc[self.dframe['is_train']==1, self.target  ]

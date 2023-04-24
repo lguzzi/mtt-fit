@@ -29,15 +29,23 @@ def recoMass(model):
   delta = pd.DataFrame()
   nu_predict = model.predict(data)
 
-  data["neutrino1_px"] = nu_predict[:,0]
-  data["neutrino1_py"] = nu_predict[:,1]
-  data["neutrino1_pz"] = nu_predict[:,2]    
-  data["neutrino1_e"] = np.sqrt(pow((data["neutrino1_px"]),2)+pow(data["neutrino1_py"],2)+pow(data["neutrino1_pz"],2))
+  data["neutrino1_px"] = nu_predict[:,1]
+  data["neutrino1_py"] = nu_predict[:,2]
+  data["neutrino1_pz"] = nu_predict[:,3]    
+  #data["neutrino1_px"] = neutrini["pxv1"]
+  #data["neutrino1_py"] = neutrini["pyv1"]
+  #data["neutrino1_pz"] = neutrini["pzv1"]
+  #data["neutrino1_e"] = np.sqrt(pow((data["neutrino1_px"]),2)+pow(data["neutrino1_py"],2)+pow(data["neutrino1_pz"],2))
+  data["neutrino1_e"] = nu_predict[:,0]
   
-  data["neutrino2_px"] = nu_predict[:,3]
-  data["neutrino2_py"] = nu_predict[:,4]
-  data["neutrino2_pz"] = nu_predict[:,5]
-  data["neutrino2_e"] = np.sqrt(pow((data["neutrino2_px"]),2)+pow(data["neutrino2_py"],2)+pow(data["neutrino2_pz"],2))
+  data["neutrino2_px"] = nu_predict[:,5]
+  data["neutrino2_py"] = nu_predict[:,6]
+  data["neutrino2_pz"] = nu_predict[:,7]
+  #data["neutrino2_px"] = neutrini["pxv2"]
+  #data["neutrino2_py"] = neutrini["pyv2"]
+  #data["neutrino2_pz"] = neutrini["pzv2"]
+  #data["neutrino2_e"] = np.sqrt(pow((data["neutrino2_px"]),2)+pow(data["neutrino2_py"],2)+pow(data["neutrino2_pz"],2))
+  data["neutrino2_e"] = nu_predict[:,4]
   
 
   delta["px1"] = (data["neutrino1_px"] - neutrini["pxv1"])/(neutrini["pxv1"]+0.0000001)
@@ -53,16 +61,16 @@ def recoMass(model):
   data["w11_pz"] = data["pzl1"] + data["neutrino1_pz"]
   data["w11_e"] = data["El1"] + data["neutrino1_e"]
 
-  data["w21_px"] = data["pxl2"] + data["neutrino1_px"]
-  data["w21_py"] = data["pyl2"] + data["neutrino1_py"]
-  data["w21_pz"] = data["pzl2"] + data["neutrino1_pz"]
-  data["w21_e"] = data["El2"] + data["neutrino1_e"]
+  #data["w21_px"] = data["pxl2"] + data["neutrino1_px"]
+  #data["w21_py"] = data["pyl2"] + data["neutrino1_py"]
+  #data["w21_pz"] = data["pzl2"] + data["neutrino1_pz"]
+  #data["w21_e"] = data["El2"] + data["neutrino1_e"]
 
 
-  data["w12_px"] = data["pxl1"] + data["neutrino2_px"]
-  data["w12_py"] = data["pyl1"] + data["neutrino2_py"]
-  data["w12_pz"] = data["pzl1"] + data["neutrino2_pz"]
-  data["w12_e"] = data["El1"] + data["neutrino2_e"]
+  #data["w12_px"] = data["pxl1"] + data["neutrino2_px"]
+  #data["w12_py"] = data["pyl1"] + data["neutrino2_py"]
+  #data["w12_pz"] = data["pzl1"] + data["neutrino2_pz"]
+  #data["w12_e"] = data["El1"] + data["neutrino2_e"]
 
   data["w22_px"] = data["pxl2"] + data["neutrino2_px"]
   data["w22_py"] = data["pyl2"] + data["neutrino2_py"]
@@ -71,20 +79,27 @@ def recoMass(model):
   
 
   data["mw11"] = pow((data["w11_e"]),2) - pow((data["w11_px"]),2) - pow((data["w11_py"]),2) - pow((data["w11_pz"]),2)
-  data["mw21"] = pow((data["w21_e"]),2) - pow((data["w21_px"]),2) - pow((data["w21_py"]),2) - pow((data["w21_pz"]),2)
-  data["mw12"] = pow((data["w12_e"]),2) - pow((data["w12_px"]),2) - pow((data["w12_py"]),2) - pow((data["w12_pz"]),2)
+  #data["mw21"] = pow((data["w21_e"]),2) - pow((data["w21_px"]),2) - pow((data["w21_py"]),2) - pow((data["w21_pz"]),2)
+  #data["mw12"] = pow((data["w12_e"]),2) - pow((data["w12_px"]),2) - pow((data["w12_py"]),2) - pow((data["w12_pz"]),2)
   data["mw22"] = pow((data["w22_e"]),2) - pow((data["w22_px"]),2) - pow((data["w22_py"]),2) - pow((data["w22_pz"]),2)
   data_pos = data[data["mw11"] > 0]
-  data_pos_b = data[data["mw21"] > 0]
-  data_pos_c = data[data["mw12"] > 0]
+  data_neg = data[data["mw11"] < 0]
+  #data_neg["mw11"] = 0
+  #data_pos_b = data[data["mw21"] > 0]
+  #data_pos_c = data[data["mw12"] > 0]
   data_pos_d = data[data["mw22"] > 0]
+  data_neg_d = data[data["mw22"] < 0]
+  #data_neg_d["mw11"] = 0
   #sata_neg = data[data["mw11"] < 0]
+  #data["mw11"] = pd.concat([np.sqrt(data_pos["mw11"]),data_neg_d["mw11"]],ignore_index=True)
   data["mw11"] = np.sqrt(data_pos["mw11"])
-  data["mw21"] = np.sqrt(data_pos_b["mw21"])
-  data["mw12"] = np.sqrt(data_pos_c["mw12"])
+  #data["mw21"] = np.sqrt(data_pos_b["mw21"])
+  #data["mw12"] = np.sqrt(data_pos_c["mw12"])
+  #data["mw22"] = pd.concat([np.sqrt(data_pos_d["mw22"]),data_neg_d["mw11"]],ignore_index=True)
   data["mw22"] = np.sqrt(data_pos_d["mw22"])
-  mW1 = []
-  mW2 = []
+  #mW1 = []
+  #mW2 = []
+  """
   for i,j,l,m in zip(data["mw11"].to_numpy(),data["mw12"].to_numpy(),data["mw21"].to_numpy(),data["mw22"].to_numpy()):
     if abs(i-80) < abs(j-80):
       mW1.append(i)
@@ -92,8 +107,8 @@ def recoMass(model):
     else:
       mW1.append(j)
       mW2.append(l)
-
-  return mW1,mW2,delta
+  """
+  return data["mw11"].to_numpy(),data["mw22"].to_numpy(),delta
   
   
 
@@ -138,7 +153,7 @@ plt.grid(True,which='major',axis="x",linestyle=':')
 plt.xticks(np.arange(xmin,xmax, bin_step))     
 plt.hist(recomass_even[0],histtype="step",bins=nbins,range=(0,250),density=1,alpha=0.9)
 plt.hist(recomass_even[1],histtype="step",bins=nbins,range=(0,250),density=1,alpha=0.9)
-filename ="test_mW.pdf"
+filename ="test_mW.png"
 plt.savefig(args.output+"/"+filename)
 for var in recomass_even[2].columns:
   fig = plt.figure(figsize=(10, 7), dpi=100)

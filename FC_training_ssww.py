@@ -39,7 +39,7 @@ model = FCModel_Functional(
   neurons = args.neurons,
   dropout = args.dropout,
   #n_targets = 4         ,
-  n_targets = 6         ,
+  n_targets = 8         ,
 )
 model.load()
 model.compile()
@@ -56,7 +56,7 @@ callbacks = [
  EarlyStopping(
     monitor='val_loss',
     min_delta=0,
-    patience=10,
+    patience=20,
     mode="min",
     restore_best_weights=True,
  ), 
