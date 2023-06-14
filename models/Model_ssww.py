@@ -92,6 +92,13 @@ class Model_Functional:
     )
 
     self.model.save(self.output)
+    self.model_json = self.model.to_json()
+    with open(self.output+"/model.jsn", "w") as json_file:
+      json_file.write(self.model_json)
+    #serialize weights to HDF5
+    self.model.save_weights(self.output+"/model_weights.h5")
+
+
     """
     self.model_json = self.model.to_json()
     with open(self.output, "w") as json_file:

@@ -23,7 +23,8 @@ class FCModel_Functional(Model):
     w1_py = l1[:,2] + v1[:,2]
     w1_pz = l1[:,3] + v1[:,3]  
     
-    minv2 = (w1_e**2)-(w1_px**2)-(w1_py**2)-(w1_pz**2)     
+    #minv2 = tf.math.abs((w1_e**2)-(w1_px**2)-(w1_py**2)-(w1_pz**2))
+    minv2 = tf.math.abs((w1_e**2)-(w1_px**2)-(w1_py**2)-(w1_pz**2))
     return tf.expand_dims(minv2,axis = -1)
     
     
@@ -35,7 +36,7 @@ class FCModel_Functional(Model):
       #print("mass ",y_pred[:,:3],y_true[:,:3])    
       #return tf.keras.backend.mean(math_ops.squared_difference(y_pred[:,:8],y_true[:,:8]),axis=-1)
       deltaNeutrini = tf.keras.backend.mean(tf.math.abs(y_pred[:,:8]-y_true[:,:8]),axis=-1)   
-      huber_loss_minv2 = tf.keras.losses.Huber(delta=400) # --> 20
+      huber_loss_minv2 = tf.keras.losses.Huber(delta=100) # --> 20
       deltaMass2_1=huber_loss_minv2(y_true[:,8],y_pred[:,8])         
       deltaMass2_2=huber_loss_minv2(y_true[:,9],y_pred[:,9])                           
       deltaMass2 = deltaMass2_1+deltaMass2_2
@@ -61,7 +62,7 @@ class FCModel_Functional(Model):
     self.layer6 = Dense(self.neurons,**self.DENSE_SETUP,name="layer6")(self.layer5)
     self.layer7 = Dense(self.neurons,**self.DENSE_SETUP,name="layer7")(self.layer6)
     self.layer8 = Dense(self.neurons,**self.DENSE_SETUP,name="layer8")(self.layer7)    
-    self.neutrini_layer = Dense(self.n_targets, **self.LAST_SETUP,name="neutrini_layer")(self.layer8)
+    self.neutrini_layer = Dense(8, **self.LAST_SETUP,name="neutrini_layer")(self.layer8)
     self.l1 = self.input_layer[:,:4]
     self.l2 = self.input_layer[:,4:8]  
     self.v1 = self.neutrini_layer[:,:4]
@@ -73,5 +74,5 @@ class FCModel_Functional(Model):
     #self.model = tf.keras.models.Model(self.input_layer, self.neutrini_layer, name=self.name)        
     print(self.model.summary())
     
-    self.model.compile(**self.COMPILE_SETUP,loss=FCModel_Functional.customLoss(1E-8),run_eagerly=False) # it was 1E-8 when looking better
+    self.model.compile(**self.COMPILE_SETUP,loss=FCModel_Functional.customLoss(1E-7),run_eagerly=False) # it was 1E-8 when looking better
     #self.model.compile(**self.COMPILE_SETUP,run_eagerly=False)

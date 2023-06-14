@@ -61,6 +61,7 @@ class Model_Functional:
     }
     normalization = 0.
     for k, v in self.inputs.items():
+      print("samples ",k)
       if "DY" in k:
         normalization = v.shape[0]
         #print(normalization)
@@ -70,9 +71,6 @@ class Model_Functional:
       v['sample'] = k               
       v["sample_weight"]=v["sample_weight"]*normalization/v.shape[0]
       
-      if "m350" in k:
-        v["sample_weight"]=v["sample_weight"]
-        v["sample_class1"]=1
       if "ggF" in k:
         v["sample_weight"]=v["sample_weight"]
         v["sample_class1"]=1

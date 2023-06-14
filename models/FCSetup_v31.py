@@ -2,6 +2,19 @@ import tensorflow   as tf
 #from tensorflow.keras.constraints          import max_norm
 from tensorflow.keras.optimizers.schedules import ExponentialDecay
 
+def customMAE(y_true,y_pred):
+  deltaNeutrini = tf.keras.backend.mean(tf.math.abs(y_pred[:,:8]-y_true[:,:8]),axis=-1)
+  return deltaNeutrini
+
+def customMinv2Loss(y_true,y_pred):
+  huber_loss_minv2 = tf.keras.losses.Huber(delta=400) # --> 20
+  deltaMass2=huber_loss_minv2(y_true[:,8],y_pred[:,8])
+  return deltaMass2
+
+def customCrossEntropy(y_true,y_pred):
+  crossEntropy = tf.keras.losses.CategoricalCrossentropy()(y_true[:,9:],y_pred[:,9:])
+  return crossEntropy
+
 gennu = '''
 TLorentzVector nus;
 nus.SetPtEtaPhiE(genNuTot_pt, genNuTot_eta, genNuTot_phi, genNuTot_e);
@@ -30,7 +43,6 @@ return tau1.{}();
 '''
 BRANCHES = {
   # ROOT features
-  'eventNumber'                   : ("EventNumber"                                        , 'float32' ),
   'tau1_px'                   : (tau1.format('Px')                                        , 'float32' ),
   'tau1_py'                  : (tau1.format('Py')                                        , 'float32' ),
   'tau1_pz'                   : (tau1.format('Pz')                                        , 'float32' ),
@@ -141,7 +153,6 @@ BRANCHES = {
 
 FEATURES = [
   b for b in BRANCHES.keys() if not b in [
-    "EventNumber",
     'pairType', 'is_train', 'is_valid', 'is_test', 'channel', 'sample_weight',
     'tauH_SVFIT_mass', 'target', 'genNu1_px', 'genNu1_py', 'genNu1_pz', 'genNu1_e',
     'genNu2_px', 'genNu2_py', 'genNu2_pz', 'genNu2_e',
@@ -163,9 +174,9 @@ SETUP = {
   'max_events': 10000000,
   #'target'    : 'tauH_SVFIT_mass',
   #'target'    : ['genNu_px', 'genNu_py', 'genNu_pz', 'genNu_e'],
-  #'target'    : ['genNu1_px', 'genNu1_py', 'genNu1_pz', 'genNu1_e',
-  #               'genNu2_px', 'genNu2_py', 'genNu2_pz', 'genNu2_e',"mGenReco",'sample_class1','sample_class2','sample_class3','sample_class4'],
-  'target'    : ['k_mass','sample_class1','sample_class3','sample_class4'],
+  'target'    : ['genNu1_px', 'genNu1_py', 'genNu1_pz', 'genNu1_e',
+                 'genNu2_px', 'genNu2_py', 'genNu2_pz', 'genNu2_e',"mGenReco",'sample_class1','sample_class3','sample_class4'],
+  #'target'    : ['k_mass','sample_class1','sample_class3','sample_class4'],
   'DENSE':    {
     'activation'        : 'relu'          ,
     #'kernel_constraint' : max_norm(3)     ,
@@ -184,11 +195,11 @@ SETUP = {
       decay_rate            = 0.2     )
     ),
     #'optimizer' : tf.keras.optimizers.Adam(learning_rate=1e-3), 
-    'metrics'   : tf.keras.metrics.mae       ,
+    'metrics'   : [customMAE,customMinv2Loss,customCrossEntropy]      ,
   },
   'FIT':      {
-    'batch_size'          : 1000,
-    'epochs'              : 100 ,
+    'batch_size'          : 500,
+    'epochs'              : 300 ,
     'shuffle'             : True,
     'verbose'             : True,
     'use_multiprocessing' : True,
