@@ -8,6 +8,7 @@ def customMAE(y_true,y_pred):
 
 BRANCHES = {
  # ROOT features
+  'weight'                 : ("weight"                                        , 'float32' ),
   'El1'                    : ("El1"                                        , 'float32' ),
   'pxl1'                   : ("pxl1"                                        , 'float32' ),
   'pyl1'                   : ("pyl1"                                        , 'float32' ),
@@ -42,6 +43,12 @@ BRANCHES = {
   #'mll'                    : ("mll"                                         , 'float32' ),
   'etaj1'                  : ("etaj1"                                       , 'float32' ),
   'etaj2'                  : ("etaj2"                                       , 'float32' ),
+  'etal1'                  : ("etal1"                                       , 'float32' ),
+  'etal2'                  : ("etal2"                                       , 'float32' ),
+  'phij1'                  : ("phij1"                                       , 'float32' ),
+  'phij2'                  : ("phij2"                                       , 'float32' ),
+  'phil1'                  : ("phil1"                                       , 'float32' ),
+  'phil2'                  : ("phil2"                                       , 'float32' ),
   'mW'                     : ('81.0'                                                      , 'float32' ),  
   'is_test'                : ('false'                                                  , 'bool'    ),
   'is_train'               : ('false'                                                  , 'bool'    ),
@@ -51,13 +58,15 @@ BRANCHES = {
 
 FEATURES = [
   b for b in BRANCHES.keys() if not b in [
+    "weight",
     "Ev1","pxv1","pyv1","pzv1",
     "Ev2","pxv2","pyv2","pzv2",
+    "etal1","etal2","phij1","phij2","phil1","phil2",
     "mW",
     "is_test","is_train","is_valid"
   ]
 ]
-#FEATURES = [b for b in BRANCHES.keys()]
+FEATURES_WITHWEIGHTS = [b for b in BRANCHES.keys()]
 SETUP = {
   'max_events': 10000000,
   #'target'    : 'tauH_SVFIT_mass',

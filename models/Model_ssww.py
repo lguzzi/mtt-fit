@@ -27,6 +27,7 @@ class Model_Functional:
 
     self.SETUP    = self.CFG.SETUP
     self.FEATURES = self.CFG.FEATURES
+    self.FEATURESWITHWEIGHTS = self.CFG.FEATURESWITHWEIGHTS
 
     self.target     = self.SETUP['target'     ] if 'target'     in self.SETUP.keys() else 'target'
     self.max_events = self.SETUP['max_events' ] if 'max_events' in self.SETUP.keys() else None
@@ -66,6 +67,7 @@ class Model_Functional:
     self.x_train = self.dframe.loc[self.dframe['is_train']==1, self.FEATURES]
     self.x_valid = self.dframe.loc[self.dframe['is_valid']==1, self.FEATURES]
     self.x_test  = self.dframe.loc[self.dframe['is_test' ]==1, self.FEATURES]    
+    self.x_testWithWeights  = self.dframe.loc[self.dframe['is_test' ]==1, self.FEATURESWITHWEIGHTS]    
     self.y_trains = []
     self.y_valids = []
     self.y_tests = []
