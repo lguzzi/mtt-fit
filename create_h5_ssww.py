@@ -66,7 +66,8 @@ def flatten(dframe, target, min_t, max_t, step_t, subset, weight):
 
 baseline = ' && '.join([
   'mjj > 300',
-  'abs(etaj1 - etaj2)>2.5'  
+  'abs(etaj1 - etaj2)>2.5',
+  'myFLAG==0'  
 ])
 
 

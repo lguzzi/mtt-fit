@@ -54,7 +54,15 @@ def recoMass(model):
   delta["px2"] = (data["neutrino2_px"] - neutrini["pxv2"])/(neutrini["pxv2"]+0.0000001)
   delta["py2"] = (data["neutrino2_py"] - neutrini["pyv2"])/(neutrini["pyv2"]+0.0000001)
   delta["pz2"] = (data["neutrino2_pz"] - neutrini["pzv2"])/(neutrini["pzv2"]+0.0000001)
-  
+  delta["nupx1"] = data["neutrino1_px"]
+  delta["nupy1"] = data["neutrino1_py"]
+  delta["nupz1"] = data["neutrino1_pz"]
+  delta["nupe1"] = data["neutrino1_e"]
+  delta["nupx2"] = data["neutrino2_px"]
+  delta["nupy2"] = data["neutrino2_py"]
+  delta["nupz2"] = data["neutrino2_pz"]
+  delta["nupe2"] = data["neutrino2_e"]
+
 
   data["w11_px"] = data["pxl1"] + data["neutrino1_px"]
   data["w11_py"] = data["pyl1"] + data["neutrino1_py"]
@@ -157,7 +165,10 @@ filename ="test_mW.png"
 plt.savefig(args.output+"/"+filename)
 for var in recomass_even[2].columns:
   fig = plt.figure(figsize=(10, 7), dpi=100)
-  plt.hist(recomass_even[2][var],histtype="step",bins=nbins,range=(-5,5),density=1,alpha=0.9,label=var)
+  range = (-5,5)
+  if "nu" in str(var):
+    range = (-100,100)
+  plt.hist(recomass_even[2][var],histtype="step",bins=nbins,range=range,density=1,alpha=0.9,label=var)
   plt.legend()
   plt.savefig(var+".png")
 
